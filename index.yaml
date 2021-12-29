@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  incron-backuper-helm:
+  - apiVersion: v2
+    appVersion: v0.1.0
+    created: "2021-12-29T10:33:45.267239002Z"
+    description: A Helm chart for incron backuper
+    digest: 368fa82346a1398fcc35c23c2e714a18896cc0ed0131b3751f76b0375b620c81
+    name: incron-backuper-helm
+    type: application
+    urls:
+    - https://github.com/camaeel/helm-charts/releases/download/incron-backuper-helm-0.1.0/incron-backuper-helm-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-12-29T10:33:45.267245002Z"
