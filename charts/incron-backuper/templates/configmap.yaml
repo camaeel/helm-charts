@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "incron-backuper.fullname" . }}
-  labels:
-    {{- include "incron-backuper.labels" . | nindent 4 }}
-data:
-  nonroot: |
-    /src EVENTS /backup.sh $@/$#
