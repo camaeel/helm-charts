@@ -2,11 +2,16 @@ name: Release helm chart
 
 on:
   push:
-    branches: [ master ]
+    paths:
+      - "charts/**"
+    branches:
+      - 'master'
+      - 'main'
+
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ master ]
+#    tags: [ 'v*.*.*' ]
+#  pull_request:
+#    branches: [ master ]
 
 jobs:
   release:
