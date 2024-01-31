@@ -1,0 +1,26 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "cnpgdb.fullname" . }}
+spec:
+  instances: {{ .Values.instances }}
+  imageName: {{ .Values.imageName }}
+  minSyncReplicas: {{ .Values.minSyncReplicas }}
+  maxSyncReplicas: {{ .Values.maxSyncReplicas }}
+
+  enableSuperuserAccess: {{ .Values.enableSuperuserAccess }}
+
+  primaryUpdateStrategy: {{ .Values.primaryUpdateStrategy }}
+
+  storage:
+    size: {{ .Values.storage.size }}
+    storageClass: {{ .Values.storage.storageClass }}
+  resources:
+    {{ toYaml .Values.resources | nindent 4 }}
+  monitoring:
+    enablePodMonitor: true
+  backup:
+    {{ toYaml .Values.backup | nindent 4 }}
+  bootstrap:
+    initdb:
+      {{ toYaml .Values.bootstrap.initdb }}

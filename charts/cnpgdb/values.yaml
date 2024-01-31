@@ -1,0 +1,37 @@
+fullnameOverride: null
+nameOverride: null
+
+instances: 2
+
+# Example of rolling update strategy:
+# - unsupervised: automated update of the primary once all
+#                 replicas have been upgraded (default)
+# - supervised: requires manual supervision to perform
+#               the switchover of the primary
+primaryUpdateStrategy: unsupervised
+
+minSyncReplicas: null
+maxSyncReplicas: null
+
+# creates secret containing superuser password
+enableSuperuserAccess: false
+
+# set image name to exact version
+imageName: null
+
+storage:
+  size: 1M
+  storageClass: null
+
+# resource limits & requests
+resources: {}
+
+#backup configuration:
+backup: {}
+
+bootstrap:
+  # initialization of db: https://cloudnative-pg.io/documentation/1.22/cloudnative-pg.v1/#postgresql-cnpg-io-v1-BootstrapInitDB
+  initdb: {}
+  # database: app
+  # owner: appuser
+  # secret: some-secret # secret that contains pregenerated password
