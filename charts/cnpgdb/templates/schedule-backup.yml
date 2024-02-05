@@ -1,0 +1,13 @@
+{{- range .Values.scheduleBackups -}}
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{ include "cnpgdb.fullname" $ }}-{{ .name }}
+spec:
+  cluster:
+    name: {{ include "cnpgdb.fullname" $ }}
+  method: {{ .method | default "barmanObjectStore" }}
+  schedule: {{ .schedule | quote }}
+  backupOwnerReference: cluster
+  immediate: true
+{{- end -}}

@@ -1,0 +1,6 @@
+{{- if .Values.eso.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "cnpgdb.fullname" . }}-db-backup-aws-creds
+{{- end }}
