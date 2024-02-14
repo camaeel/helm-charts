@@ -22,11 +22,8 @@ spec:
   backup:
     {{ toYaml .Values.backup | nindent 4 }}
   bootstrap:
-    initdb:
-      {{ toYaml .Values.bootstrap.initdb }}
-  {{- if .Values.bootstrap.recovery }}
+    {{ toYaml .Values.bootstrap | nindent 4 }}
+  {{- if .Values.externalClusters }}
   externalClusters:
-    - name: s3Backup
-      barmanObjectStore:
-        {{ toYaml .Values.backup.barmanObjectStore | nindent 8 }}
+    {{ toYaml .Values.externalClusters | nindent 4 }}
   {{- end }}

@@ -77,7 +77,7 @@ eso:
 
 bootstrap:
   # initialization of db: https://cloudnative-pg.io/documentation/1.22/cloudnative-pg.v1/#postgresql-cnpg-io-v1-BootstrapInitDB
-  initdb: {}
+#  initdb: {}
   # database: app
   # owner: appuser
   # secret: some-secret # secret that contains pregenerated password
@@ -90,3 +90,21 @@ bootstrap:
     # Recovery from named backup
     # backup:
     #   name: backup-example
+externalClusters: []
+#  - name: s3Backup
+#    barmanObjectStore:
+#      destinationPath: s3://example-postgres-backup/
+#      s3Credentials:
+#        inheritFromIAMRole: false
+#        accessKeyId:
+#          name: SECRET_CONTAINING_AWS_CREDS
+#          key: access_key
+#        secretAccessKey:
+#          name:SECRET_CONTAINING_AWS_CREDS
+#          key: secret_key
+#        sessionToken:
+#          name: SECRET_CONTAINING_AWS_CREDS
+#          key: security_token
+#      wal:
+#        compression: gzip
+#        maxParallel: 2
