@@ -108,3 +108,33 @@ externalClusters: []
 #      wal:
 #        compression: gzip
 #        maxParallel: 2
+
+logicalBackup:
+  enabled: false
+  schedule: "30 */3 * * *"
+  image:
+    pgdump:
+      registry: postgres
+      tag: 16
+    awscli:
+      registry: public.ecr.aws/aws-cli/aws-cli
+      tag: latest
+    encrypt:
+      registry: alpine
+      tag: latest
+  databases: []
+#   - app
+#  bucket: example-app-backups
+  # encrypt - encrypt before uploading to cloud
+  encrypt:
+    enabled: false
+#    agePublicKey: "xxxx"
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsNonRoot: true
+    runAsUser: 1000
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault

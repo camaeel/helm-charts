@@ -1,0 +1,125 @@
+{{- if .Values.logicalBackup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "cnpgdb.fullname" . }}-logical-backup
+spec:
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ include "cnpgdb.fullname" . }}-logical-backup
+    spec:
+      template:
+        metadata:
+          labels:
+            app: "{{ include "cnpgdb.fullname" . }}-logical-backup"
+        spec:
+          initContainers:
+          {{- range .Values.logicalBackup.databases }}
+            - image: {{ $.Values.logicalBackup.image.pgdump.registry }}:{{ $.Values.logicalBackup.image.pgdump.tag }}
+              imagePullPolicy: IfNotPresent
+              name: pg-dump
+              command:
+                - bash
+                - -c
+              args:
+                - |
+                  pg_dump | gzip > /data/dumps/{{ include "cnpgdb.fullname" $ }}-{{ . }}-$(date  "+%Y-%m-%d-%H-%M").sql.gz
+              env:
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      key: username
+                      name: "{{ include "cnpgdb.fullname" $ }}-{{ . }}"
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: password
+                      name: "{{ include "cnpgdb.fullname" $ }}-{{ . }}"
+                - name: PGDATABASE
+                  value: {{ . }}
+                - name: PGHOST
+                  value: "{{ include "cnpgdb.fullname" $ }}-ro"
+              volumeMounts:
+                - mountPath: /data/dumps
+                  name: data-dumps
+              securityContext:
+                {{ toYaml $.Values.logicalBackup.securityContext | nindent 16 }}
+          {{- end }}
+          {{- if .Values.logicalBackup.encrypt.enabled }}
+            - image: {{ $.Values.logicalBackup.image.encrypt.registry }}:{{ $.Values.logicalBackup.image.encrypt.tag }}
+              imagePullPolicy: IfNotPresent
+              name: age-encrypt
+              command:
+                - /bin/sh
+                - -c
+              args:
+                - |
+                  set -e
+                  ARCH=`uname -m`
+                  if [ "$ARCH" == "x86_64" ]; then
+                    ARCH=amd64
+                  elif [ "$ARCH" == "aarch64" ]; then
+                    ARCH=arm64
+                  fi
+                  wget https://dl.filippo.io/age/latest?for=linux/$ARCH -q -O- | tar -xzvf - -C /tmp age/age
+                  for file in `ls /data/dumps`; do 
+                    /tmp/age/age -r {{ .Values.logicalBackup.encrypt.agePublicKey }} -o /data/encrypted-dumps/${file}.age /data/dumps/$file
+                  done
+              volumeMounts:
+                - mountPath: /data/dumps
+                  name: data-dumps
+                - mountPath: /data/encrypted-dumps
+                  name: data-encrypted-dumps
+              securityContext:
+                {{ toYaml $.Values.logicalBackup.securityContext | nindent 16 }}
+          {{- end }}
+          containers:
+            - name: aws-s3-upload
+              image: {{ .Values.logicalBackup.image.awscli.registry }}:{{ .Values.logicalBackup.image.awscli.tag }}
+              command:
+                - /bin/sh
+                - -c
+              args:
+                - |
+                  ls /data/dumps
+                  aws s3 cp /data/dumps/* {{ .Values.logicalBackup.bucket }}
+              volumeMounts:
+                {{- if .Values.logicalBackup.encrypt.enabled }}
+                - mountPath: /data/dumps
+                  name: data-encrypted-dumps
+                {{- else }}
+                - mountPath: /data/dumps
+                  name: data-dumps
+                {{- end }}
+              env:
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: secret_key
+                      name: "{{ include "cnpgdb.fullname" . }}-db-backup-aws-creds"
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: access_key
+                      name: "{{ include "cnpgdb.fullname" . }}-db-backup-aws-creds"
+                - name: AWS_SESSION_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: security_token
+                      name: "{{ include "cnpgdb.fullname" . }}-db-backup-aws-creds"
+              securityContext:
+                {{ toYaml $.Values.logicalBackup.securityContext | nindent 16 }}
+          restartPolicy: OnFailure
+          volumes:
+            - name: data-dumps
+              emptyDir: {}
+            - name: data-encrypted-dumps
+              emptyDir: {}
+#            - name: postgres-backup-vol
+#              persistentVolumeClaim:
+#                claimName: postgres-backup-mspy
+#                readOnly: false
+  schedule: {{ .Values.logicalBackup.schedule }}
+{{- end }}
