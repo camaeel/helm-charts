@@ -25,7 +25,9 @@ spec:
                 - -c
               args:
                 - |
+                  find /data
                   pg_dump | gzip > /data/dumps/{{ include "cnpgdb.fullname" $ }}-{{ . }}-$(date  "+%Y-%m-%d-%H-%M").sql.gz
+                  find /data
               env:
                 - name: PGUSER
                   valueFrom:
@@ -64,9 +66,11 @@ spec:
                     ARCH=arm64
                   fi
                   wget https://dl.filippo.io/age/latest?for=linux/$ARCH -q -O- | tar -xzvf - -C /tmp age/age
+                  find /data
                   for file in `ls /data/dumps`; do 
                     /tmp/age/age -r {{ .Values.logicalBackup.encrypt.agePublicKey }} -o /data/encrypted-dumps/${file}.age /data/dumps/$file
                   done
+                  find /data
               volumeMounts:
                 - mountPath: /data/dumps
                   name: data-dumps
@@ -83,7 +87,7 @@ spec:
                 - -c
               args:
                 - |
-                  ls /data/dumps
+                  find /data
                   aws s3 cp /data/dumps/* {{ .Values.logicalBackup.bucket }}
               volumeMounts:
                 {{- if .Values.logicalBackup.encrypt.enabled }}
