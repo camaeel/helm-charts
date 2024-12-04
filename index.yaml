@@ -3,6 +3,16 @@ entries:
   cnpgdb:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2024-12-04T19:17:12.330174856Z"
+    description: Chart for deploying databases managed by CloudNative-pg operator
+    digest: a0fa7dc986a29f66ee7dface58955d7c38e979e99b5f60318e17c26cbd536719
+    name: cnpgdb
+    type: application
+    urls:
+    - https://github.com/camaeel/helm-charts/releases/download/cnpgdb-0.4.0/cnpgdb-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2024-04-04T19:45:47.884886113Z"
     description: Chart for deploying databases managed by CloudNative-pg operator
     digest: a42ee5d1e3af4d3f2310aefb32845e99028f3af134226065d6655ce1061ae78c
@@ -62,4 +72,4 @@ entries:
     urls:
     - https://github.com/camaeel/helm-charts/releases/download/incron-backuper-helm-0.1.0/incron-backuper-helm-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-04T19:45:47.884932489Z"
+generated: "2024-12-04T19:17:12.330204582Z"
