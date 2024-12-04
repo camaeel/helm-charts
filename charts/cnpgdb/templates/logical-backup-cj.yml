@@ -10,6 +10,7 @@ spec:
       labels:
         app: {{ include "cnpgdb.fullname" . }}-logical-backup
     spec:
+      ttlSecondsAfterFinished: {{ .Values.logicalBackup.ttlSecondsAfterFinished }}
       template:
         metadata:
           labels:

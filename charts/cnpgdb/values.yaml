@@ -112,6 +112,7 @@ externalClusters: []
 logicalBackup:
   enabled: false
   schedule: "30 */3 * * *"
+  ttlSecondsAfterFinished: 14400
   image:
     pgdump:
       registry: postgres
