@@ -95,21 +95,12 @@ spec:
                   name: data-dumps
                 {{- end }}
               env:
-                - name: AWS_SECRET_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      key: secret_key
-                      name: "{{ include "cnpgdb.fullname" . }}-db-backup-aws-creds"
-                - name: AWS_ACCESS_KEY_ID
-                  valueFrom:
-                    secretKeyRef:
-                      key: access_key
-                      name: "{{ include "cnpgdb.fullname" . }}-db-backup-aws-creds"
-                - name: AWS_SESSION_TOKEN
-                  valueFrom:
-                    secretKeyRef:
-                      key: security_token
-                      name: "{{ include "cnpgdb.fullname" . }}-db-backup-aws-creds"
+                - name: AWS_REGION
+                  value: {{ .Values.aws.region }}
+                - name: AWS_WEB_IDENTITY_TOKEN_FILE
+                  value: /var/run/secrets/kubernetes.io/serviceaccount/token
+                - name: AWS_ROLE_ARN
+                  value: {{ .Values.aws.roleArn }}
               securityContext:
                 {{ toYaml $.Values.logicalBackup.securityContext | nindent 16 }}
           restartPolicy: OnFailure
