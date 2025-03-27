@@ -95,6 +95,8 @@ spec:
                 - mountPath: /data/dumps
                   name: data-dumps
                 {{- end }}
+                - mountPath: /.aws
+                  name: aws-creds
               env:
                 - name: AWS_REGION
                   value: {{ .Values.aws.region }}
@@ -112,6 +114,9 @@ spec:
               emptyDir: {}
             - name: data-encrypted-dumps
               emptyDir: {}
+            - name: aws-creds
+              emptyDir: {}
+
 #            - name: postgres-backup-vol
 #              persistentVolumeClaim:
 #                claimName: postgres-backup-mspy
