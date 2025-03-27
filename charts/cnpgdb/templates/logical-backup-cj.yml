@@ -16,6 +16,7 @@ spec:
           labels:
             app: "{{ include "cnpgdb.fullname" . }}-logical-backup"
         spec:
+          serviceAccountName: {{ include "cnpgdb.fullname" . }}-db-backup
           initContainers:
           {{- range .Values.logicalBackup.databases }}
             - image: {{ $.Values.logicalBackup.image.pgdump.registry }}:{{ $.Values.logicalBackup.image.pgdump.tag }}
