@@ -99,8 +99,10 @@ spec:
                   value: {{ .Values.aws.region }}
                 - name: AWS_WEB_IDENTITY_TOKEN_FILE
                   value: /var/run/secrets/kubernetes.io/serviceaccount/token
+                {{- if .Values.aws.roleArn }}
                 - name: AWS_ROLE_ARN
                   value: {{ .Values.aws.roleArn }}
+                {{- end }}
               securityContext:
                 {{ toYaml $.Values.logicalBackup.securityContext | nindent 16 }}
           restartPolicy: OnFailure
