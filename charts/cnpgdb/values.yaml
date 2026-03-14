@@ -61,7 +61,7 @@ bootstrap:
   # database: app
   # owner: appuser
   # secret: some-secret # secret that contains pregenerated password
-  recovery: null
+  # recovery: null
     # default source for recovery - points to S3 bucket
     # source: s3Backup
     # recoveryTarget:
