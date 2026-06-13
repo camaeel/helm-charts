@@ -8,5 +8,6 @@
   ],
   "schedule": [
     "* 16-20 * * 4"
-  ]
+  ],
+  "timezone": "Europe/Warsaw"
 }
